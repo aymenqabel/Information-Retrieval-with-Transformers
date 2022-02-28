@@ -1,5 +1,4 @@
 from sentence_transformers import InputExample
-from datetime import datetime
 from torch.utils.data import Dataset
 
 
