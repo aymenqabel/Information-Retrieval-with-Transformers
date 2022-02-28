@@ -20,6 +20,7 @@ def predict(args):
     contexts_train, _, _ = read_data(args.path_test)
     contexts_test, _, _ = read_data(args.path_train)
     all_contexts = list(contexts_train.values()) + list(contexts_test.values())
+    print("Queries Read Successfully")
     # We encode all passages into our vector space. This takes about 5 minutes (depends on your GPU speed)
     if not(path.exists("corpus_embeddings.pt")):
         print("Indexing the documents")
@@ -52,7 +53,6 @@ def predict(args):
           pass
       
 
-      print(query)
       query_embedding = model.encode(query, convert_to_tensor=True, show_progress_bar=True)
       cos_scores = util.cos_sim(query_embedding, corpus_embeddings)[0]
       top_results = torch.topk(cos_scores, k=top_k)
@@ -75,9 +75,9 @@ def predict(args):
     
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("-d", "--path_train", type=str, default="/content/data/squad/train-v2.0.json", 
+    parser.add_argument("-d", "--path_train", type=str, default="data/squad/train-v2.0.json", 
         help="data folder name") 
-    parser.add_argument("-p", "--path_test", type=str, default="/content/data/squad/dev-v2.0.json", 
+    parser.add_argument("-p", "--path_test", type=str, default="data/squad/dev-v2.0.json", 
         help="data folder name") 
     parser.add_argument("-m","--model_name", type=str, default="multi-qa-MiniLM-L6-cos-v1", 
         help="Model to encode text")
@@ -85,8 +85,8 @@ if __name__ == "__main__":
         help="Top documents to return")
     parser.add_argument("-c", "--cross_encoder", type=bool, 
         help="Whether to use cross encoder to refine the result or not")
-    parser.add_argument("-q", "--query", type=str, default='Who is Beyoncé', 
-        help="Question to look for")
+    parser.add_argument("-q", "--query", type=str, default='Who are the Normans?', 
+        help="Question to answer")
 
     predict(parser.parse_args())
     
