@@ -9,15 +9,16 @@ from tqdm import tqdm
 import matplotlib.pyplot as plt
 
 def test(args):
+    download_data()
     model = SentenceTransformer(args.model_name)
     predictions, test_labels= [] ,[]    #Truncate long passages to 512 tokens
     top_k = args.top_k                          #Number of passages we want to retrieve with the bi-encoder
 
-    #The bi-encoder will retrieve 100 documents. We use a cross-encoder, to re-rank the results list to improve the quality
-    # cross_encoder = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-6-v2')
-
     print('Start reading the queries')
     contexts, questions, qc_map = read_data(args.path_test)
+    print("Queries Read successfully")
+    
+    print("Start embedding the corpus")
     corpus_embeddings = model.encode(list(contexts.values()), convert_to_tensor=True, show_progress_bar=True)
     print("Finished embedding the corpus")
     
@@ -55,7 +56,7 @@ def test(args):
     
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("-d", "--path_test", type=str, default="/content/data/squad/dev-v1.1.json", 
+    parser.add_argument("-d", "--path_test", type=str, default="data/squad/dev-v1.1.json", 
         help="data folder name") 
     parser.add_argument("-r", "--path_result", type=str, default="results", 
         help="data folder name")

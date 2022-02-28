@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 
 def train(args):
     download_data()
-    # Load our embedding model
+    # Load our embedding model to train
     print("Load the Model ", args.model_name)
     model = SentenceTransformer(args.model_name)
     model.max_seq_length = args.seq_length

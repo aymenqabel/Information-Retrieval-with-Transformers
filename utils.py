@@ -74,11 +74,13 @@ def compute_errors(labels, predictions):
     mrr = np.zeros_like(labels, dtype=np.float64)
     prediction = np.zeros((len(labels), len(predictions[0])))
     for i in range(len(predictions)):
-        for j in range(len(predictions[0])):
-            if predictions[i][j] == labels[i]:
-                mrr[i] = 1/(1+j)
-                prediction[i][j] == 1
-                break 
+      for j in range(len(predictions[0])):
+          if predictions[i][j] == labels[i]:
+              mrr[i] = 1/(1+j)
+              break 
+          else:
+            prediction[i][j] = 0
+
     list_accuracies = np.mean(prediction, axis= 0)
     accuracy = list_accuracies[0]
     mrr_score = np.mean(mrr)
