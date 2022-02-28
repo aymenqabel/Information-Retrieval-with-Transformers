@@ -1,8 +1,9 @@
 import numpy as np
 import json
-
-from sklearn.metrics import precision_recall_curve
-
+import urllib.request  
+import os
+import os.path
+from os import path
 
 def read_data(file):
     '''
@@ -11,10 +12,10 @@ def read_data(file):
     Dev set will be used to validate the model.
     '''
     train = json.load(open(file, 'rb'))
-    contexts, questions, qc_map = QuestionContextExtractor(train['data'])
+    contexts, questions, qc_map = question_context_extractor(train['data'])
     return contexts, questions, qc_map
     
-def QuestionContextExtractor(data):
+def question_context_extractor(data):
     '''
     Loop through a dataset and extract questions and their corresponding contexts.
     
@@ -42,18 +43,42 @@ def QuestionContextExtractor(data):
                 except:
                     continue
                     
-    print(f'Data contains {total+1} question/answer pairs with a short answer.'+
+    print(f'Data contains {qid+1} question/answer pairs with a short answer.'+
           f'\nThere are {len(contexts)} unique article paragraphs.')
     return contexts, question, qc_map
 
 
 
 
-# def compute_errors(labels, predictions):
-#     accuracy = 
-#     precision = 
-#     recall = 
-#     f1_score =
-#     mrr = 
-#     return accuracy, precision, recall, f1_score, mrr
+def compute_errors(labels, predictions):
+    '''
+    Compute the accuracy and the MRR of the model in the test set
+    Returns:
+        Accuracy - Accuracy of the model
+        MRR - List of MRR@k for different values of k
+    '''
+    mrr = np.zeros_like(labels)
+    prediction = np.zeros_like(labels)
+    for i in range(len(predictions)):
+        for j in range(len(predictions[0])):
+            if predictions[i][j] == labels[i]:
+                mrr[i] = 1/(1+j)
+                prediction[i] = 1
+                break 
+    accuracy = np.mean(prediction)
+    mrr_score = np.mean(mrr)
+    return accuracy, mrr_score
 
+def download_data():
+    '''
+    Download the data needed for training and testing
+    '''
+    train = os.path.join("data/squad/", 'train-v1.1.json')
+    test = os.path.join("data/squad/", 'dev-v1.1.json')
+    if not(path.exists(train)):
+        print("Downloading Data")
+        url_train = 'https://rajpurkar.github.io/SQuAD-explorer/dataset/train-v1.1.json'
+        urllib.request.urlretrieve(url_train, train)
+    if not(path.exists(test)):
+        url_test = 'https://rajpurkar.github.io/SQuAD-explorer/dataset/dev-v1.1.json'
+        urllib.request.urlretrieve(url_test, test)
