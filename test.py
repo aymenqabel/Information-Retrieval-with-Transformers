@@ -9,6 +9,7 @@ from tqdm import tqdm
 import matplotlib.pyplot as plt
 
 def test(args):
+    download_data()
     model = SentenceTransformer(args.model_name)
     predictions, test_labels= [] ,[]    #Truncate long passages to 512 tokens
     top_k = args.top_k                          #Number of passages we want to retrieve with the bi-encoder

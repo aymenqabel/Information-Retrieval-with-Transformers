@@ -9,6 +9,7 @@ from time import time
 import numpy as np
 
 def predict(args):
+    download_data()
     model = SentenceTransformer(args.model_name)
     top_k = args.top_k                          #Number of passages we want to retrieve with the bi-encoder
 
