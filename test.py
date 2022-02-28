@@ -14,11 +14,11 @@ def test(args):
     predictions, test_labels= [] ,[]    #Truncate long passages to 512 tokens
     top_k = args.top_k                          #Number of passages we want to retrieve with the bi-encoder
 
-    #The bi-encoder will retrieve 100 documents. We use a cross-encoder, to re-rank the results list to improve the quality
-    # cross_encoder = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-6-v2')
-
     print('Start reading the queries')
     contexts, questions, qc_map = read_data(args.path_test)
+    print("Queries Read successfully")
+    
+    print("Start embedding the corpus")
     corpus_embeddings = model.encode(list(contexts.values()), convert_to_tensor=True, show_progress_bar=True)
     print("Finished embedding the corpus")
     
