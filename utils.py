@@ -72,7 +72,7 @@ def compute_errors(labels, predictions):
         MRR - List of MRR@k for different values of k
     '''
     mrr = np.zeros_like(labels, dtype=np.float64)
-    prediction = np.zeros((len(labels), len(predictions[0])))
+    prediction = np.ones((len(labels), len(predictions[0])))
     for i in range(len(predictions)):
       for j in range(len(predictions[0])):
           if predictions[i][j] == labels[i]:
