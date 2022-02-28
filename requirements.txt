@@ -1,0 +1,6 @@
+matplotlib==3.2.2
+numpy==1.21.5
+scikit_learn==1.0.2
+sentence_transformers==2.2.0
+torch==1.10.0+cu111
+tqdm==4.62.3
