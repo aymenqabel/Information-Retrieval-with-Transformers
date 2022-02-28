@@ -56,7 +56,7 @@ def test(args):
     
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("-d", "--path_test", type=str, default="/content/data/squad/dev-v1.1.json", 
+    parser.add_argument("-d", "--path_test", type=str, default="data/squad/dev-v1.1.json", 
         help="data folder name") 
     parser.add_argument("-r", "--path_result", type=str, default="results", 
         help="data folder name")
