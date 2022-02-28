@@ -1,6 +1,6 @@
 import argparse
 from torch.utils.data import DataLoader
-from sentence_transformers import SentenceTransformer, LoggingHandler, util, models, evaluation, losses, InputExample
+from sentence_transformers import SentenceTransformer,losses
 from datetime import datetime
 from dataset import SQuAD
 from utils import *
@@ -10,12 +10,12 @@ import matplotlib.pyplot as plt
 def train(args):
     download_data()
     # Load our embedding model
-    print("use pretrained SBERT model")
+    print("Load the Model ", args.model_name)
     model = SentenceTransformer(args.model_name)
     model.max_seq_length = args.seq_length
     print("Model loaded successfully")
-    model_save_path = 'output/train_bi-encoder-mnrl-{}-{}'.format(args.model_name.replace("/", "-"), datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
-
+    model_save_path = 'output/train_encoder-{}-{}'.format(args.model_name.replace("/", "-"), datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
+    print("Reading the data")
     corpus, questions, qcmap = read_data(args.path_train)
     print("Data read succesfully")
     train_dataset = SQuAD(questions, corpus, qcmap)
@@ -59,7 +59,6 @@ if __name__ == "__main__":
         help="number of steps per epoch")
     parser.add_argument("-v", "--evaluation_steps", type=int, default=50, 
         help="number of steps before evaluation")
-        
     parser.add_argument("-s", "--seq_length", type=int, default=512, 
         help="Maximum length of sentences")
     parser.add_argument("--warmup_steps", default=1000, type=int)
@@ -69,4 +68,6 @@ if __name__ == "__main__":
         help="prints training loss every k batch")
     parser.add_argument("-lr", "--learning_rate", type=float, default=1e-4, 
         help="model learning rate")
+    
+    
     train(parser.parse_args())

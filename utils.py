@@ -5,6 +5,20 @@ import os
 import os.path
 from os import path
 
+def download_data():
+    '''
+    Download the data needed for training and testing
+    '''
+    train = os.path.join("data/squad/", 'train-v1.1.json')
+    test = os.path.join("data/squad/", 'dev-v1.1.json')
+    if not(path.exists(train)):
+        print("Downloading Data")
+        url_train = 'https://rajpurkar.github.io/SQuAD-explorer/dataset/train-v1.1.json'
+        urllib.request.urlretrieve(url_train, train)
+    if not(path.exists(test)):
+        url_test = 'https://rajpurkar.github.io/SQuAD-explorer/dataset/dev-v1.1.json'
+        urllib.request.urlretrieve(url_test, test)
+        
 def read_data(file):
     '''
     Read the json data and returns the contexts and questions.
@@ -57,28 +71,23 @@ def compute_errors(labels, predictions):
         Accuracy - Accuracy of the model
         MRR - List of MRR@k for different values of k
     '''
-    mrr = np.zeros_like(labels)
-    prediction = np.zeros_like(labels)
+    mrr = np.zeros_like(labels, dtype=np.float64)
+    prediction = np.zeros((len(labels), len(predictions[0])))
     for i in range(len(predictions)):
         for j in range(len(predictions[0])):
             if predictions[i][j] == labels[i]:
                 mrr[i] = 1/(1+j)
-                prediction[i] = 1
+                prediction[i][j] == 1
                 break 
-    accuracy = np.mean(prediction)
+    list_accuracies = np.mean(prediction, axis= 0)
+    accuracy = list_accuracies[0]
     mrr_score = np.mean(mrr)
-    return accuracy, mrr_score
+    return accuracy, mrr_score, list_accuracies
 
-def download_data():
-    '''
-    Download the data needed for training and testing
-    '''
-    train = os.path.join("data/squad/", 'train-v1.1.json')
-    test = os.path.join("data/squad/", 'dev-v1.1.json')
-    if not(path.exists(train)):
-        print("Downloading Data")
-        url_train = 'https://rajpurkar.github.io/SQuAD-explorer/dataset/train-v1.1.json'
-        urllib.request.urlretrieve(url_train, train)
-    if not(path.exists(test)):
-        url_test = 'https://rajpurkar.github.io/SQuAD-explorer/dataset/dev-v1.1.json'
-        urllib.request.urlretrieve(url_test, test)
+
+def save_json(path_result, name, x):
+    """
+    Saves x into path_result with the given name
+    """
+    with open(os.path.join(path_result, f'{name}.json'), 'w') as f:
+        json.dump(x, f, indent=4)

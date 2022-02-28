@@ -1,6 +1,6 @@
 import argparse
 from threading import main_thread
-from sentence_transformers import SentenceTransformer, CrossEncoder, util, models, evaluation, losses, InputExample
+from sentence_transformers import SentenceTransformer, CrossEncoder, util
 from utils import * 
 import torch
 import os.path
